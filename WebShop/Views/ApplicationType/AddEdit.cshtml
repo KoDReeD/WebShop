@@ -1,0 +1,48 @@
+﻿@model WebShop.Models.ApplicationType
+
+@{
+    var title = "Add Application Type";
+}
+
+@if (Model.Id != 0)
+{
+    title = "Edit Application Type";
+}
+<form method="post" asp-action="AddEditPost">
+    <div class="border p-3">
+        <input asp-for="Id" hidden/>
+        <div class="form-group row">
+            <h2 class="text-info pl-3">@title</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Name" class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                <br/>
+
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-primary w-100">Back</a>
+                        </div>
+                        <div class="col">
+                            <input type="submit" class="btn btn-success w-100" value="Save"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
