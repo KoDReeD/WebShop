@@ -41,7 +41,6 @@ public class ApplicationType : Controller
     {
         try
         {
-            throw new Exception();
             //  добавление
             if (applicationType.Id == 0)
             {
