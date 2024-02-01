@@ -68,5 +68,39 @@ namespace WebShop.Context
                 return View(category);
             }
         }
+
+        
+        //  GET
+        public IActionResult Delete(string category)
+        {
+            Category obj;
+
+            try
+            {
+                obj = JsonSerializer.Deserialize<Category>(category);
+                return View(obj);
+            }
+            catch (Exception e)
+            {
+                obj = new Category();
+                return View(obj);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Category category)
+        {
+            try
+            {
+                _db.Category.Remove(category);
+                _db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                return View(category);
+            }
+        }
     }
 }

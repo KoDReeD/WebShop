@@ -1,12 +1,11 @@
-﻿@model Category
+﻿@model ApplicationType
 
 @* когда форма выполняет post метод, то ищет action *@
 
-<form method="post" asp-action="Edit">
+<form method="post" asp-action="Delete">
     <div class="border p-3">
-
         <div class="form-group row">
-            <h2 class="text-info pl-3">Edit Category</h2>
+            <h2 class="text-info pl-3">Delete Application Type</h2>
         </div>
 
         <div class="row">
@@ -20,26 +19,15 @@
                         <input asp-for="Id" readonly class="form-control"/>
                     </div>
                 </div>
-                
-                <br/>
-
-                <div class="form-group row">
-                    <div class="col-4">
-                        <label asp-for="Title"></label>
-                    </div>
-                    <div class="col-8">
-                        <input asp-for="Title" class="form-control"/>
-                    </div>
-                </div>
 
                 <br/>
 
                 <div class="form-group row">
                     <div class="col-4">
-                        <label asp-for="DisplayOrder"></label>
+                        <label asp-for="Name"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="DisplayOrder" class="form-control"/>
+                        <input readonly asp-for="Name" class="form-control"/>
                     </div>
                 </div>
 
@@ -52,7 +40,7 @@
                             <a asp-action="Index" class="btn btn-primary w-100">Back</a>
                         </div>
                         <div class="col">
-                            <input type="submit" class="btn btn-success w-100" value="Save"/>
+                            <input type="submit" class="btn btn-danger w-100" value="Delete"/>
                         </div>
 
                     </div>

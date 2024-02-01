@@ -21,7 +21,7 @@ public class ApplicationType : Controller
         return View(list);
     }
 
-    [Route("AddEdit/{applicationType}")]
+    // [Route("AddEdit/{applicationType}")]
     public IActionResult AddEdit(string applicationType)
     {
         try
@@ -37,10 +37,11 @@ public class ApplicationType : Controller
     }
 
     [HttpPost]
-    public IActionResult AddEditPost(Models.ApplicationType applicationType)
+    public IActionResult AddEdit(Models.ApplicationType applicationType)
     {
         try
         {
+            throw new Exception();
             //  добавление
             if (applicationType.Id == 0)
             {
@@ -63,4 +64,38 @@ public class ApplicationType : Controller
         
         
     }
+
+    //  GET
+    public IActionResult Delete(string application)
+    {
+        Models.ApplicationType obj;
+
+        try
+        {
+            obj = JsonSerializer.Deserialize<Models.ApplicationType>(application);
+            return View(obj);
+        }
+        catch (Exception e)
+        {
+            obj = new Models.ApplicationType();
+            return View(obj);
+        }
+    }
+
+    [HttpPost]
+    public IActionResult Delete(Models.ApplicationType application)
+    {
+        try
+        {
+            _db.ApplicationType.Remove(application);
+            _db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        catch (Exception e)
+        {
+            return View(application);
+        }
+    }
+    
+
 }

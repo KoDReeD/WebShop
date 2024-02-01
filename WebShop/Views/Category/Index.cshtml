@@ -40,7 +40,7 @@
                                 <a asp-action="Edit" asp-route-category="@JsonSerializer.Serialize(category)" class="btn btn-primary mx-2">
                                     Edit
                                 </a>
-                                <a class="btn btn-danger mx-2">
+                                <a asp-action="Delete" asp-route-category="@JsonSerializer.Serialize(category)" class="btn btn-danger mx-2" >
                                     Delete
                                 </a>
                             </div>
