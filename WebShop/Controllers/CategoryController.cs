@@ -31,9 +31,22 @@ namespace WebShop.Context
         [ValidateAntiForgeryToken] 
         public IActionResult Create(Category category)
         {
-            _db.Category.Add(category);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                
+                    _db.Category.Add(category);
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+
+                return View(category);
+            }
+            catch (Exception e)
+            {
+                return View(category);
+            }
         }
         
         //  GET
