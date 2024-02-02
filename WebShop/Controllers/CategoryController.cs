@@ -28,14 +28,13 @@ namespace WebShop.Context
 
         [HttpPost]
         // токен защиты, проверка что действителен в методе
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         public IActionResult Create(Category category)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                
                     _db.Category.Add(category);
                     _db.SaveChanges();
                     return RedirectToAction("Index");
@@ -48,21 +47,19 @@ namespace WebShop.Context
                 return View(category);
             }
         }
-        
+
         //  GET
         public IActionResult Edit(string category)
         {
-            Category obj;
-            try
+            if (string.IsNullOrWhiteSpace(category))
             {
-                obj = JsonSerializer.Deserialize<Category>(category);
-                return View(obj);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                obj = new Category();
-                return View(obj);
-            }
+    
+            Models.Category obj = JsonSerializer.Deserialize<Models.Category>(category);
+            if (obj == null) return NotFound();
+            
+            return View(obj);
         }
 
         [HttpPost]
@@ -82,22 +79,19 @@ namespace WebShop.Context
             }
         }
 
-        
+
         //  GET
         public IActionResult Delete(string category)
         {
-            Category obj;
-
-            try
+            if (string.IsNullOrWhiteSpace(category))
             {
-                obj = JsonSerializer.Deserialize<Category>(category);
-                return View(obj);
+                return NotFound();
             }
-            catch (Exception e)
-            {
-                obj = new Category();
-                return View(obj);
-            }
+    
+            Models.Category obj = JsonSerializer.Deserialize<Models.Category>(category);
+            if (obj == null) return NotFound();
+            
+            return View(obj);
         }
 
         [HttpPost]

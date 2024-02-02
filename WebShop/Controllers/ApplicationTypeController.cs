@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebShop.Context;
 using WebShop.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -26,13 +27,20 @@ public class ApplicationType : Controller
     {
         try
         {
-            Models.ApplicationType obj = JsonSerializer.Deserialize<Models.ApplicationType>(applicationType);
-            if (obj == null) obj = new Models.ApplicationType();
+            Models.ApplicationType obj;
+            if (string.IsNullOrWhiteSpace(applicationType))
+            {
+                obj = new Models.ApplicationType();
+            }
+            else
+            {
+                obj = JsonSerializer.Deserialize<Models.ApplicationType>(applicationType);
+            }
             return View(obj);
         }
         catch (Exception e)
         {
-            return View(new Models.ApplicationType());
+            return NotFound();
         }
     }
 
@@ -41,7 +49,6 @@ public class ApplicationType : Controller
     {
         try
         {
-            throw new Exception();
             //  добавление
             if (applicationType.Id == 0)
             {
@@ -68,17 +75,19 @@ public class ApplicationType : Controller
     //  GET
     public IActionResult Delete(string application)
     {
-        Models.ApplicationType obj;
-
         try
         {
-            obj = JsonSerializer.Deserialize<Models.ApplicationType>(application);
+            if (string.IsNullOrWhiteSpace(application))
+            {
+                return NotFound();
+            }
+            Models.ApplicationType obj = JsonSerializer.Deserialize<Models.ApplicationType>(application);
+
             return View(obj);
         }
         catch (Exception e)
         {
-            obj = new Models.ApplicationType();
-            return View(obj);
+            return NotFound();
         }
     }
 

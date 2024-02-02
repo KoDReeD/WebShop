@@ -1,0 +1,149 @@
+@model WebShop.Models.ViewModels.ProductVM
+
+@{
+    var title = "Create Product";
+}
+
+@if (Model.Product.Id != 0)
+{
+    title = "Edit product";
+}
+<form method="post" asp-action="AddEdit" enctype="multipart/form-data">
+    <div class="border p-3">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div class="form-group row">
+            <h2 class="text-info pl-3">@title</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+
+                @* ID *@
+                @if (Model.Product.Id == 0)
+                {
+                    <input asp-for="Product.Id" hidden=""/>
+                }
+                else
+                {
+                    <div class="form-group row">
+                        <div class="col-4">
+                            <label asp-for="Product.Id"></label>
+                        </div>
+                        <div class="col-8">
+                            <input readonly asp-for="Product.Id" class="form-control"/>
+                        </div>
+                    </div>
+                }
+
+                <br/>
+
+                @* NAME *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Name" class="form-control"/>
+                        <span asp-validation-for="Product.Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* Price *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Cost"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Cost" class="form-control"/>
+                        <span asp-validation-for="Product.Cost" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* DESCRIPTION *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Description" class="form-control"/>
+                        <span asp-validation-for="Product.Description" class="text-danger"></span>
+                    </div>
+                </div>
+                
+                <br/>
+
+                @* DISCOUNT *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.Discount"></label>
+                    </div>
+                    <div class="col-8">
+                        <input asp-for="Product.Discount" class="form-control"/>
+                        <span asp-validation-for="Product.Discount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* PHOTO PATH *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        Image
+                    </div>
+                    <div class="col-8">
+                        <input type="file" name="files" id="uploadBox" multiple
+                               class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* CATEGORY *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.CategoryId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Product.CategoryId" asp-items="@Model.CategoryList"
+                                class="form-control">
+                            <option disabled selected>-- SELECT CATEGORY --</option>
+                        </select>
+                        <span asp-validation-for="Product.Discount" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            <a asp-action="Index" class="btn btn-primary w-100">
+                                <i class="fas fa-sign-out-alt"></i> Back
+                            </a>
+                        </div>
+                        <div class="col">
+                            <input type="submit" class="btn btn-success w-100" value="Save"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-4">
+                <img width="100%" style="border-radius: 5px; border: 1px solid #bbb"/>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts
+{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}
