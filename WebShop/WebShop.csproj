@@ -28,4 +28,8 @@
       <_ContentIncludedByDefault Remove="Views\Category\Index.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\images\productImages" />
+    </ItemGroup>
+
 </Project>

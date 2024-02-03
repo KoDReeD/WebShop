@@ -4,8 +4,11 @@ using WebShop.Context;
 var builder = WebApplication.CreateBuilder(args);
 
 //  добавление контекста БД
+// builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(
+//     builder.Configuration.GetConnectionString("PostgreConnection")));
+
 builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(
-    builder.Configuration.GetConnectionString("PostgreConnection")));
+    builder.Configuration.GetConnectionString("LocalPostgreConnection")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

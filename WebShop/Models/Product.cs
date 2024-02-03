@@ -14,10 +14,10 @@ public class Product
     public string? Description { get; set; }
     
     [Required]
-    [Range(0, double.MaxValue)]
+    [Range(0, double.MaxValue, ErrorMessage = "Cost field must be greater than 0")]
     public double Cost { get; set; }
     
-    [Range(0, 99)]
+    [Range(0, 99, ErrorMessage = "Cost field must be greater than 0 and less than 100")]
     public int Discount { get; set; }
     
     public string? PhotoPath { get; set; }
@@ -26,5 +26,6 @@ public class Product
     public int CategoryId { get; set; }
     
     [ForeignKey("CategoryId")]
+    [Required]
     public virtual Category Category { get; set; }
 }

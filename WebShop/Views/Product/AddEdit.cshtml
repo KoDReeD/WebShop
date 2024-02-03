@@ -2,6 +2,7 @@
 
 @{
     var title = "Create Product";
+    var list = Model.CategoryList;
 }
 
 @if (Model.Product.Id != 0)
@@ -11,6 +12,7 @@
 <form method="post" asp-action="AddEdit" enctype="multipart/form-data">
     <div class="border p-3">
         <div asp-validation-summary="ModelOnly"></div>
+
         <div class="form-group row">
             <h2 class="text-info pl-3">@title</h2>
         </div>
@@ -73,7 +75,7 @@
                         <span asp-validation-for="Product.Description" class="text-danger"></span>
                     </div>
                 </div>
-                
+
                 <br/>
 
                 @* DISCOUNT *@
@@ -89,19 +91,6 @@
 
                 <br/>
 
-                @* PHOTO PATH *@
-                <div class="form-group row">
-                    <div class="col-4">
-                        Image
-                    </div>
-                    <div class="col-8">
-                        <input type="file" name="files" id="uploadBox" multiple
-                               class="form-control"/>
-                    </div>
-                </div>
-
-                <br/>
-
                 @* CATEGORY *@
                 <div class="form-group row">
                     <div class="col-4">
@@ -112,7 +101,7 @@
                                 class="form-control">
                             <option disabled selected>-- SELECT CATEGORY --</option>
                         </select>
-                        <span asp-validation-for="Product.Discount" class="text-danger"></span>
+                        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -122,7 +111,7 @@
                     <div class="col-8 offset-4 row">
 
                         <div class="col">
-                            <a asp-action="Index" class="btn btn-primary w-100">
+                            <a id="saveButton" asp-action="Index" class="btn btn-primary w-100">
                                 <i class="fas fa-sign-out-alt"></i> Back
                             </a>
                         </div>
@@ -133,10 +122,33 @@
                     </div>
                 </div>
             </div>
-            
+
+
+            @* PHOTO PATH *@
+
+
+            @* DISPLAY IMAGE *@
             <div class="col-4">
-                <img width="100%" style="border-radius: 5px; border: 1px solid #bbb"/>
+                <img src="@WebConst.ImagePath@Model.Product.PhotoPath" id="ProdImage"
+                     style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
+                
+                <input hidden asp-for="Product.PhotoPath"/>
+
+                <div class="form-group row mt-2">
+                    <div class="col">
+                        <input type="file" name="files" id="uploadBox" multiple
+                               class="form-control" accept="image/png, image/jpeg, image/jpg">
+                    </div>
+
+                    <div class="row justify-content-center">
+                        <a id="deleteButton" class="btn btn-danger btn-block w-50 mt-2">
+                            <!-- Use btn-block to make the button full-width -->
+                            Удалить картинку
+                        </a>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </form>
@@ -146,4 +158,25 @@
     @{
         <partial name="_ValidationScriptsPartial"/>
     }
+
+
 }
+
+<script>
+    document.getElementById('uploadBox').addEventListener('change', function(event) {
+        var file = event.target.files[0]; // Get the selected file
+        var imgElement = document.getElementById('ProdImage');
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            imgElement.src = e.target.result;
+        };
+        
+       
+        // Read the selected file as a Data URL
+        reader.readAsDataURL(file);
+        
+        
+    });
+</script>
+
