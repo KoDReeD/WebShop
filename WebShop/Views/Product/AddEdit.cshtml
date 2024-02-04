@@ -1,9 +1,9 @@
 @using WebShop.Models.ViewModels
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model WebShop.Models.ViewModels.ProductVM
 
 @{
     var title = "Create Product";
-    var list = Model.CategoryList;
 }
 
 @if (Model.Product.Id != 0)
@@ -25,7 +25,7 @@
                 @* ID *@
                 @if (Model.Product.Id == 0)
                 {
-                    <input asp-for="Product.Id" hidden=""/>
+                    <input asp-for="Product.Id" disabled/>
                 }
                 else
                 {

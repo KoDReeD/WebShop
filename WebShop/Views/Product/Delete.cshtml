@@ -1,1 +1,118 @@
-руддщ
+@model Product
+
+<form method="post" asp-action="Delete">
+    <div class="border p-3">
+
+        <div class="form-group row">
+            <h2 class="text-info pl-3">Delete Product</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-8">
+
+                @* ID *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Id"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Id" class="form-control"/>
+                    </div>
+                </div>
+                <br/>
+
+                @* NAME *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Name"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Name" class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* Price *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Cost"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Cost" class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* DESCRIPTION *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Description" class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                @* DISCOUNT *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Discount"></label>
+                    </div>
+                    <div class="col-8">
+                        <input readonly asp-for="Discount" class="form-control"/>
+                    </div>
+                </div>
+
+                <br/>
+                
+                <input hidden asp-for="CategoryId"/>
+                
+                @* CATEGORY *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="CategoryId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="CategoryId" readonly
+                                class="form-control">
+                            <option readonly selected>@Model.Category.Title</option>
+                        </select>   
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="form-group row">
+                    <div class="col-8 offset-4 row">
+
+                        <div class="col">
+                            <a id="saveButton" asp-action="Index" class="btn btn-primary w-100">
+                                <i class="fas fa-sign-out-alt"></i> Back
+                            </a>
+                        </div>
+                        <div class="col">
+                            <input type="submit" class="btn btn-danger w-100" value="Delete"/>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+            @* DISPLAY IMAGE *@
+            <div class="col-4">
+                @if (!(string.IsNullOrWhiteSpace(Model.PhotoPath)))
+                {
+                    <img src="@WebConst.ImagePath@Model.PhotoPath"
+                         style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
+                }
+
+                <input hidden asp-for="PhotoPath"/>
+            </div>
+
+        </div>
+    </div>
+</form>

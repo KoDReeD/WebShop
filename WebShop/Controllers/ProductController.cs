@@ -159,12 +159,48 @@ public class ProductController : Controller
     // GET
     public IActionResult Delete(string product)
     {
-        return View();
+        try
+        {
+            if (string.IsNullOrWhiteSpace(product)) return NotFound();
+            
+            var obj = JsonSerializer.Deserialize<Product>(product);
+            return View(obj);
+        }
+        catch (Exception e)
+        {
+            return NotFound();
+        }
+        
     }
 
     // // Post
-    // [HttpPost]
-    // public IActionResult Delete()
-    // {
-    // }
+    [HttpPost]
+    public IActionResult Delete(Product product)
+    {
+        try
+        {
+            var photoPath = product.PhotoPath;
+            //  нужно удалить картинку
+            if (!string.IsNullOrWhiteSpace(photoPath))
+            {
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                //  абсолютынй путь до wwwroot + папака с картинками
+                var uploads = webRootPath + WebConst.ImagePath;
+
+                if (System.IO.File.Exists(uploads + photoPath))
+                {
+                    System.IO.File.Delete(uploads + photoPath);
+                }
+            }
+            
+            _db.Product.Remove(product);
+            _db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+        catch (Exception e)
+        {
+            return View(product);
+        }
+    }
 }

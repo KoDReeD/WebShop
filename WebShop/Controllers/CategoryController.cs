@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WebShop.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -95,12 +96,18 @@ namespace WebShop.Context
         }
 
         [HttpPost]
-        public IActionResult Delete(Category category)
+        public async Task<IActionResult> Delete(Category category)
         {
             try
             {
+                var check = await _db.Product.Where(x => x.CategoryId == category.Id).ToListAsync();
+                if (check.Count > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+                
                 _db.Category.Remove(category);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
 
                 return RedirectToAction("Index");
             }
