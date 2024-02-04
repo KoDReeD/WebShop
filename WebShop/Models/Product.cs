@@ -14,7 +14,7 @@ public class Product
     public string? Description { get; set; }
     
     [Required]
-    [Range(0, double.MaxValue, ErrorMessage = "Cost field must be greater than 0")]
+    [Range(1, double.MaxValue, ErrorMessage = "Cost field must be from 0 to 99")]
     public double Cost { get; set; }
     
     [Range(0, 99, ErrorMessage = "Cost field must be greater than 0 and less than 100")]

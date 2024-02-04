@@ -1,3 +1,4 @@
+@using WebShop.Models.ViewModels
 @model WebShop.Models.ViewModels.ProductVM
 
 @{
@@ -9,6 +10,7 @@
 {
     title = "Edit product";
 }
+
 <form method="post" asp-action="AddEdit" enctype="multipart/form-data">
     <div class="border p-3">
         <div asp-validation-summary="ModelOnly"></div>
@@ -129,10 +131,20 @@
 
             @* DISPLAY IMAGE *@
             <div class="col-4">
-                <img src="@WebConst.ImagePath@Model.Product.PhotoPath" id="ProdImage"
-                     style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
+                @if (Model.Product.Id != 0 && !(string.IsNullOrWhiteSpace(Model.Product.PhotoPath)))
+                {
+                    <img src="@WebConst.ImagePath@Model.Product.PhotoPath" id="ProdImage"
+                         style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
+                }
+                else
+                {
+                    <img hidden id="ProdImage"
+                         style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
+                }
                 
                 <input hidden asp-for="Product.PhotoPath"/>
+                
+                <input id="PhotoStatus" hidden asp-for="PhotoStatus"/>
 
                 <div class="form-group row mt-2">
                     <div class="col">
@@ -140,12 +152,23 @@
                                class="form-control" accept="image/png, image/jpeg, image/jpg">
                     </div>
 
-                    <div class="row justify-content-center">
-                        <a id="deleteButton" class="btn btn-danger btn-block w-50 mt-2">
-                            <!-- Use btn-block to make the button full-width -->
-                            Удалить картинку
-                        </a>
-                    </div>
+                    @if (Model.Product.Id != 0 && !(string.IsNullOrWhiteSpace(Model.Product.PhotoPath)))
+                    {
+                        <div class="row justify-content-center">
+                            <a id="deleteButton" class="btn btn-danger btn-block w-50 mt-2">
+                                Удалить картинку
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row justify-content-center">
+                            <a id="deleteButton" hidden class="btn btn-danger btn-block w-50 mt-2">
+                                Удалить картинку
+                            </a>
+                        </div>
+                    }
+                    
                 </div>
             </div>
 
@@ -163,20 +186,45 @@
 }
 
 <script>
+    // выбор картинки
     document.getElementById('uploadBox').addEventListener('change', function(event) {
+
+        var deleteBtn = document.getElementById('deleteButton');
         var file = event.target.files[0]; // Get the selected file
         var imgElement = document.getElementById('ProdImage');
+        
+        var photoStatus = document.getElementById('PhotoStatus');
 
         var reader = new FileReader();
         reader.onload = function(e) {
             imgElement.src = e.target.result;
         };
         
-       
-        // Read the selected file as a Data URL
         reader.readAsDataURL(file);
         
+        deleteBtn.hidden = false;
+        imgElement.hidden = false;
         
+        photoStatus.value = @Html.Raw(Json.Serialize(PhotoStatus.Add));
     });
+    
+    // удаление картинки
+     document.getElementById('deleteButton').addEventListener('click', function(event) {
+         var deleteBtn = document.getElementById('deleteButton');
+         var imgElement = document.getElementById('ProdImage');
+         var uploadBox = document.getElementById('uploadBox');
+         var photoStatus = document.getElementById('PhotoStatus');
+         // Очистить значение input type="file"
+         uploadBox.value = '';
+         
+         // Установить src картинки на пустую строку или путь к пустой картинке
+         imgElement.src = ''; // Пустая строка или путь к пустой картинке
+         
+         deleteBtn.hidden = true;
+         imgElement.hidden = true;
+         
+         photoStatus.value = @Html.Raw(Json.Serialize(PhotoStatus.Delete));
+         
+     });
 </script>
 

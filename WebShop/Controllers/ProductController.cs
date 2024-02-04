@@ -41,7 +41,8 @@ public class ProductController : Controller
                 Product = string.IsNullOrWhiteSpace(product)
                     ? new Product()
                     : JsonSerializer.Deserialize<Product>(product),
-                CategoryList = categories
+                CategoryList = categories,
+                PhotoStatus = PhotoStatus.None
             };
 
             return View(objVM);
@@ -76,24 +77,15 @@ public class ProductController : Controller
         var files = HttpContext.Request.Form.Files;
         try
         {
-            //  выбран ли файл
-            if (files != null)
-            {
-                var oldPhotoName = productVm.Product.PhotoPath;
-                string webRootPath = _webHostEnvironment.WebRootPath;
-                var uploads = webRootPath + WebConst.ImagePath;
-                
-                //  если было фото удаляем
-                if (!string.IsNullOrWhiteSpace(oldPhotoName))
-                {
-                    var oldPath = uploads + oldPhotoName;
+            var oldPhotoName = productVm.Product.PhotoPath;
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            //  абсолютынй путь до wwwroot + папака с картинками
+            var uploads = webRootPath + WebConst.ImagePath;
+            var statusPhoto = productVm.PhotoStatus;
 
-                    if (System.IO.File.Exists(oldPath))
-                    {
-                        System.IO.File.Delete(oldPath);
-                    }
-                }
-                
+            //  добавили файл
+            if (statusPhoto == PhotoStatus.Add)
+            {
                 var extension = Path.GetExtension(files[0].FileName);
                 var file = files[0];
                 
@@ -107,6 +99,53 @@ public class ProductController : Controller
 
                 productVm.Product.PhotoPath = fileName;
             }
+            else
+            {
+                //  если NONE то просто выйдет на сохранение
+                //  файл был, но сейчас файла нет, значит удаляем
+                if (statusPhoto == PhotoStatus.Delete)
+                {
+                    var oldPath = uploads + oldPhotoName;
+
+                    if (System.IO.File.Exists(oldPath))
+                    {
+                        System.IO.File.Delete(oldPath);
+                    }
+                    
+                    productVm.Product.PhotoPath = null;
+                }
+            }
+            
+            //  CREATE
+            if (productVm.Product.Id == 0)
+            {
+                try
+                {
+                    _db.Product.Add(productVm.Product);
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception e)
+                {
+                    if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
+                    return View(productVm);
+                }
+            }
+            //  EDIT
+            else
+            {
+                try
+                {
+                    _db.Product.Update(productVm.Product);
+                    _db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (Exception e)
+                {
+                    if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
+                    return View(productVm);
+                }
+            }
         }
         catch (Exception e)
         {
@@ -114,39 +153,6 @@ public class ProductController : Controller
             return View(productVm);
         }
 
-        //  CREATE
-        if (productVm.Product.Id == 0)
-        {
-            try
-            {
-                _db.Product.Add(productVm.Product);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            catch (Exception e)
-            {
-                if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
-                return View(productVm);
-            }
-        }
-        //  EDIT
-        else
-        {
-            try
-            {
-                _db.Product.Update(productVm.Product);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            catch (Exception e)
-            {
-                if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
-                return View(productVm);
-            }
-            return RedirectToAction("Index");
-        }
-
-        return RedirectToAction("Index");
     }
 
 
