@@ -25,7 +25,7 @@
                 @* ID *@
                 @if (Model.Product.Id == 0)
                 {
-                    <input asp-for="Product.Id" disabled/>
+                    <input asp-for="Product.Id" hidden/>
                 }
                 else
                 {
@@ -109,6 +109,22 @@
 
                 <br/>
 
+                @* APPLICATIONS *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="Product.ApplicationTypeId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="Product.ApplicationTypeId" asp-items="@Model.ApplicationTypeList"
+                                class="form-control">
+                            <option disabled selected>-- SELECT APPLICATION TYPE --</option>
+                        </select>
+                        <span asp-validation-for="Product.ApplicationTypeId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <br/>
+
                 <div class="form-group row">
                     <div class="col-8 offset-4 row">
 
@@ -141,9 +157,9 @@
                     <img hidden id="ProdImage"
                          style="height: auto; object-fit: contain; max-height: 250px; width: 100%; border-radius: 5px; border: 1px solid #bbb"/>
                 }
-                
+
                 <input hidden asp-for="Product.PhotoPath"/>
-                
+
                 <input id="PhotoStatus" hidden asp-for="PhotoStatus"/>
 
                 <div class="form-group row mt-2">
@@ -168,7 +184,7 @@
                             </a>
                         </div>
                     }
-                    
+
                 </div>
             </div>
 
@@ -227,4 +243,3 @@
          
      });
 </script>
-

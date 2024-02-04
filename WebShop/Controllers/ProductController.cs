@@ -24,6 +24,7 @@ public class ProductController : Controller
     {
         var products = await _db.Product
             .Include(x => x.Category)
+            .Include(x => x.ApplicationType)
             .ToListAsync();
         return View(products);
     }
@@ -34,6 +35,8 @@ public class ProductController : Controller
         try
         {
             var categories = await GetCategoryList();
+            var applications = await GetApplicationList();
+            
             if (categories == null) return View("Index");
 
             ProductVM objVM = new ProductVM()
@@ -42,6 +45,7 @@ public class ProductController : Controller
                     ? new Product()
                     : JsonSerializer.Deserialize<Product>(product),
                 CategoryList = categories,
+                ApplicationTypeList = applications,
                 PhotoStatus = PhotoStatus.None
             };
 
@@ -69,6 +73,23 @@ public class ProductController : Controller
             return null;
         }
     }
+    
+    private static async Task<List<SelectListItem>> GetApplicationList()
+    {
+        try
+        {
+            var list = await _db.ApplicationType.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToListAsync();
+            return list;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
 
     // Post
     [HttpPost]
@@ -86,6 +107,16 @@ public class ProductController : Controller
             //  добавили файл
             if (statusPhoto == PhotoStatus.Add)
             {
+                var photoPath = uploads + oldPhotoName;
+                //  добавили вместо существующего, то удаляем старое
+                if (!string.IsNullOrWhiteSpace(oldPhotoName))
+                {
+                    if (System.IO.File.Exists(photoPath))
+                    {
+                        System.IO.File.Delete(photoPath);
+                    }
+                }
+                
                 var extension = Path.GetExtension(files[0].FileName);
                 var file = files[0];
                 
@@ -99,23 +130,19 @@ public class ProductController : Controller
 
                 productVm.Product.PhotoPath = fileName;
             }
-            else
+            //  удаление
+            else if(statusPhoto == PhotoStatus.Delete)
             {
-                //  если NONE то просто выйдет на сохранение
-                //  файл был, но сейчас файла нет, значит удаляем
-                if (statusPhoto == PhotoStatus.Delete)
-                {
-                    var oldPath = uploads + oldPhotoName;
+                var oldPath = uploads + oldPhotoName;
 
-                    if (System.IO.File.Exists(oldPath))
-                    {
-                        System.IO.File.Delete(oldPath);
-                    }
-                    
-                    productVm.Product.PhotoPath = null;
+                if (System.IO.File.Exists(oldPath))
+                {
+                    System.IO.File.Delete(oldPath);
                 }
+                    
+                productVm.Product.PhotoPath = null;
             }
-            
+
             //  CREATE
             if (productVm.Product.Id == 0)
             {

@@ -68,9 +68,10 @@
                 </div>
 
                 <br/>
-                
+
+                @* иначе CategoryId = 0 *@
                 <input hidden asp-for="CategoryId"/>
-                
+
                 @* CATEGORY *@
                 <div class="form-group row">
                     <div class="col-4">
@@ -80,7 +81,24 @@
                         <select asp-for="CategoryId" readonly
                                 class="form-control">
                             <option readonly selected>@Model.Category.Title</option>
-                        </select>   
+                        </select>
+                    </div>
+                </div>
+
+                <br/>
+
+                <input hidden asp-for="ApplicationTypeId"/>
+
+                @* APLICATION *@
+                <div class="form-group row">
+                    <div class="col-4">
+                        <label asp-for="ApplicationTypeId"></label>
+                    </div>
+                    <div class="col-8">
+                        <select asp-for="ApplicationTypeId" readonly
+                                class="form-control">
+                            <option readonly selected>@Model.ApplicationType.Name</option>
+                        </select>
                     </div>
                 </div>
 
@@ -101,7 +119,7 @@
                     </div>
                 </div>
             </div>
-            
+
             @* DISPLAY IMAGE *@
             <div class="col-4">
                 @if (!(string.IsNullOrWhiteSpace(Model.PhotoPath)))

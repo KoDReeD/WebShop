@@ -6,6 +6,7 @@ public class ProductVM
 {
     public Product Product { get; set; }
     public List<SelectListItem> CategoryList { get; set; }
+    public List<SelectListItem> ApplicationTypeList { get; set; }
 
     public PhotoStatus PhotoStatus { get; set; }
 }

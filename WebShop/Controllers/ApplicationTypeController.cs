@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebShop.Context;
 using WebShop.Models;
@@ -92,12 +93,14 @@ public class ApplicationType : Controller
     }
 
     [HttpPost]
-    public IActionResult Delete(Models.ApplicationType application)
+    public async Task<IActionResult> Delete(Models.ApplicationType application)
     {
         try
         {
+            var checkList = await _db.Product.Where(x => x.ApplicationTypeId == application.Id).ToListAsync();
+            if (checkList.Count > 0) return RedirectToAction("Index");
             _db.ApplicationType.Remove(application);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
         catch (Exception e)

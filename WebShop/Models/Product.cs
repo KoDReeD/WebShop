@@ -28,4 +28,11 @@ public class Product
     [ForeignKey("CategoryId")]
     [Required]
     public virtual Category Category { get; set; }
+
+    [Display(Name = "Application Type")]
+    public int ApplicationTypeId { get; set; }
+
+    [ForeignKey("ApplicationTypeId")]
+    [Required]
+    public ApplicationType ApplicationType { get; set; }
 }
