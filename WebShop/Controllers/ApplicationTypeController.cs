@@ -22,26 +22,26 @@ public class ApplicationType : Controller
         var list = _db.ApplicationType.ToList();
         return View(list);
     }
-
-    // [Route("AddEdit/{applicationType}")]
-    public IActionResult AddEdit(string applicationType)
+    
+    public async Task<IActionResult> AddEdit(int id)
     {
         try
         {
-            Models.ApplicationType obj;
-            if (string.IsNullOrWhiteSpace(applicationType))
+            if (id == 0)
             {
-                obj = new Models.ApplicationType();
+                return View(new Models.ApplicationType());
             }
             else
             {
-                obj = JsonSerializer.Deserialize<Models.ApplicationType>(applicationType);
+                var application = await _db.ApplicationType.FirstOrDefaultAsync(x => x.Id == id);
+                if (application == null) return NotFound();
+
+                return View(application);
             }
-            return View(obj);
         }
         catch (Exception e)
         {
-            return NotFound();
+            return RedirectToAction("Index");
         }
     }
 
@@ -62,33 +62,30 @@ public class ApplicationType : Controller
             }
 
             _db.SaveChanges();
-            
+
             return RedirectToAction("Index");
         }
         catch (Exception e)
         {
             return View("AddEdit", applicationType);
         }
-        
-        
     }
 
     //  GET
-    public IActionResult Delete(string application)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(application))
-            {
-                return NotFound();
-            }
-            Models.ApplicationType obj = JsonSerializer.Deserialize<Models.ApplicationType>(application);
+            if (id == 0) return NotFound();
+            
+            var application = await _db.ApplicationType.FirstOrDefaultAsync(x => x.Id == id);
+            if (application == null) return NotFound();
 
-            return View(obj);
+            return View(application);
         }
         catch (Exception e)
         {
-            return NotFound();
+            return RedirectToAction("Index");
         }
     }
 
@@ -108,6 +105,4 @@ public class ApplicationType : Controller
             return View(application);
         }
     }
-    
-
 }

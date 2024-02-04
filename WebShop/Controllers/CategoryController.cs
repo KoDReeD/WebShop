@@ -50,17 +50,21 @@ namespace WebShop.Context
         }
 
         //  GET
-        public IActionResult Edit(string category)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (string.IsNullOrWhiteSpace(category))
+            try
             {
-                return NotFound();
+                var category = await _db.Category.FirstOrDefaultAsync(x => x.Id == id);
+                if (category == null) return NotFound();
+
+                return View(category);
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Index");
             }
     
-            Models.Category obj = JsonSerializer.Deserialize<Models.Category>(category);
-            if (obj == null) return NotFound();
             
-            return View(obj);
         }
 
         [HttpPost]
@@ -82,17 +86,21 @@ namespace WebShop.Context
 
 
         //  GET
-        public IActionResult Delete(string category)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (string.IsNullOrWhiteSpace(category))
+            try
             {
-                return NotFound();
+                if (id == 0) return NotFound();
+                
+                var category = await _db.Category.FirstOrDefaultAsync(x => x.Id == id);
+                if (category == null) return NotFound();
+
+                return View(category);
             }
-    
-            Models.Category obj = JsonSerializer.Deserialize<Models.Category>(category);
-            if (obj == null) return NotFound();
-            
-            return View(obj);
+            catch (Exception e)
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
@@ -105,7 +113,6 @@ namespace WebShop.Context
                 {
                     return RedirectToAction("Index");
                 }
-                
                 _db.Category.Remove(category);
                 await _db.SaveChangesAsync();
 

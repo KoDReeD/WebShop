@@ -30,7 +30,7 @@ public class ProductController : Controller
     }
 
     // GET
-    public async Task<IActionResult> AddEdit(string product)
+    public async Task<IActionResult> AddEdit(int id)
     {
         try
         {
@@ -38,22 +38,32 @@ public class ProductController : Controller
             var applications = await GetApplicationList();
             
             if (categories == null) return View("Index");
-
+            if (applications == null) return View("Index");
+            
             ProductVM objVM = new ProductVM()
             {
-                Product = string.IsNullOrWhiteSpace(product)
-                    ? new Product()
-                    : JsonSerializer.Deserialize<Product>(product),
-                CategoryList = categories,
                 ApplicationTypeList = applications,
-                PhotoStatus = PhotoStatus.None
+                CategoryList = categories,
+                PhotoStatus = PhotoStatus.None,
             };
+            
+            if (id == 0)
+            {
+                objVM.Product = new Product();
+            }
+            else
+            {
+                var product = await _db.Product.FirstOrDefaultAsync(x => x.Id == id);
+                if (product == null) return NotFound();
+
+                objVM.Product = product;
+            }
 
             return View(objVM);
         }
         catch (Exception e)
         {
-            return NotFound();
+            return RedirectToAction("Index");
         }
     }
 
@@ -184,18 +194,24 @@ public class ProductController : Controller
 
 
     // GET
-    public IActionResult Delete(string product)
+    public async Task<IActionResult> Delete(int id)
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(product)) return NotFound();
+            if (id == 0) return NotFound();
+
+            var product = await _db.Product
+                .Include(x => x.ApplicationType)
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync(x => x.Id == id);
             
-            var obj = JsonSerializer.Deserialize<Product>(product);
-            return View(obj);
+            if (product == null) return NotFound();
+
+            return View(product);
         }
         catch (Exception e)
         {
-            return NotFound();
+            return RedirectToAction("Index");
         }
         
     }
