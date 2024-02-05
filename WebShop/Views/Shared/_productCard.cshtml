@@ -1,38 +1,57 @@
 @model Product
 
-        <div class="col-lg-4 col-md-6 pb-4 filter @Model.Category.Title.Replace(' ', '_')">
-            <!-- Card-->
-            <div class="card bg-white rounded shadow-sm" style="border:1px solid #222">
-                <div class="card-body px-3 pt-3 pb-1 row">
-                    <div class="col-7"><label class="float-left">@Model.Name</label></div>
-                    <div class="col-5"><label class="float-right"><span class="text-info h5">@(Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100  : Model.Cost)</span> / RUB</label> </div>
-                </div>
-                @if (!string.IsNullOrWhiteSpace(Model.PhotoPath))
-                {
-                    <img class="card-img-top img-fluid d-block mx-auto mb-3 "
-                         style="height: auto; object-fit: contain; max-height: 150px; width: 100%;"
-                         src="@WebConst.ImagePath@Model.PhotoPath" alt="Card image cap">
-                }
-                else
-                {
-                    <img class="card-img-top img-fluid d-block mx-auto mb-3 "
-                         style="height: auto; object-fit: contain; max-height: 150px; width: 100%;"
-                         src="images/noImage.jpg" alt="Card image cap">
-                }
-                <div class="card-body p-1 px-3 row">
-                    <div class="col-6">
-                        <span class="badge p-2 border w-100 text-dark" style="background-color:lavenderblush">@Model.Category.Title</span>
-                    </div>
-                <div class="col-6 border-0">
-                    <span class="badge p-2 border w-100 text-dark" style="background-color:aliceblue">@Model.Name</span>
-                </div>
-                <div class="col-12 pt-2" style="font-size:13px; text-align:justify" >
-                    <p>@Model.Description</p>
-                </div>
-                <div class="col-12 p-1">
-                    <a class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
-                </div>
-                </div>
+<div class="col-lg-6 col-md-6 pb-4 filter @Model.Category.Title.Replace(' ', '_')">
+    <!-- Card-->
+    <div class="card bg-white rounded shadow-sm" style="border:1px solid #222; height: 420px">
+        <div class="card-body px-3 pt-3 pb-1 row" style="height: 20px">
+            <div class="col-9">
+                <label class="float-left text-truncate d-inline-block overflow-ellipsis"
+                       style="max-width: 100%; white-space: normal; overflow: hidden; 
+                               text-overflow: ellipsis">
+                    @(Model.Name.Length > 80 ? Model.Name.Substring(0, 81) + "..." : Model.Name)
+                </label>
+            </div>
+            <div class="col-3">
+                <label class="float-right">
+                    <span class="text-info h5" style="text-align: right">
+                        @(Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100 : Model.Cost)
+                    </span>
+                    / RUB
+                </label>
+            </div>
+
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.PhotoPath))
+        {
+            <img class="card-img-top img-fluid d-block mx-auto mb-3 mt-1"
+                 style="height: auto; object-fit: contain; max-height: 150px; width: 100%;"
+                 src="@WebConst.ImagePath@Model.PhotoPath" alt="Card image cap">
+        }
+        else
+        {
+            <img class="card-img-top img-fluid d-block mx-auto mb-3 "
+                 style="height: auto; object-fit: contain; max-height: 150px; width: 100%;"
+                 src="images/noImage.jpg" alt="Card image cap">
+        }
+        <div class="card-body p-1 px-3 row">
+            <div class="col-6">
+                <span class="badge p-2 border w-100 text-dark"
+                      style="background-color:lavenderblush; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    @Model.Category.Title
+                </span>
+            </div>
+            <div class="col-6 border-0">
+                <span class="badge p-2 border w-100 text-dark" style="background-color:aliceblue; 
+                    display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Model.ApplicationType.Name</span>
+            </div>
+            <div class="col-12 pt-2" style="font-size:13px; text-align:justify; height: 25px" >
+                <p>
+                    @(!string.IsNullOrWhiteSpace(Model.Description) ? (Model.Description.Length > 143 ? Model.Description.Substring(0, 144) + "..." : Model.Description) : " ")
+                </p>
+            </div>
+            <div class="col-12 p-1">
+                <a class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
             </div>
         </div>
-
+    </div>
+</div>

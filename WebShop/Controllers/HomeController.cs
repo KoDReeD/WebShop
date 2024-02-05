@@ -20,12 +20,22 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        HomeVM homeVm = new HomeVM()
+        try
         {
-            Products = await _db.Product.Include(x => x.Category).ToListAsync(),
-            Categories = await _db.Category.ToListAsync()
-        };
-        return View(homeVm);
+            HomeVM homeVm = new HomeVM()
+            {
+                Products = await _db.Product
+                    .Include(x => x.Category)
+                    .Include(x => x.ApplicationType)
+                    .ToListAsync(),
+                Categories = await _db.Category.ToListAsync(),
+            };
+            return View(homeVm);
+        }
+        catch (Exception e)
+        {
+            return RedirectToAction("Index");
+        }
     }
 
     public IActionResult Privacy()
