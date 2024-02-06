@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@using WebShop.Utilites
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -29,6 +33,28 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
                     </li>
+                    
+                    @* проверка включена ли сессия и есть ли продукты в сесии *@
+                    <li>
+                        @* если в сесси ShoppingCart не пустое *@
+                        @if (HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart) != null)
+                        {
+                            <a asp-action="Index" asp-controller="Cart" class="nav-link">
+                                @{
+                                    var count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart).Count;
+                                }
+                                <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
+                            </a>
+                            
+                        }
+                        else
+                        {
+                            <a href="#" class="nav-link">
+                                 <i class="fas fa-shopping-cart"></i> &nbsp; 0
+                            </a>
+                        }
+                    </li>
+                    
                 </ul>
             </div>
         </div>

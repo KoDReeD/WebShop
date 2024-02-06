@@ -1,0 +1,81 @@
+@model WebShop.Models.ViewModels.DetailsProductVM
+
+<div class="">
+    <form method="post" asp-action="DetailsPost">
+        <input asp-for="@Model.Product.Id" hidden/>
+        <div class="container backgroundWhite pt-4">
+            <div class="card" style="border:1px solid #000000; ">
+                <div class="card-header bg-dark text-light ml-1 row container" style="border-radius: 0px;">
+                    <div class="col-9 col-md-9">
+                        <h5 class="text-white">@Model.Product.Name</h5>
+                    </div>
+                    @if (Model.Product.Discount > 0)
+                    {
+                        <h5 class="text-warning col-4">
+                            <strike class="me-2">@Model.Product.Cost.ToString("c")</strike>
+                            @((Model.Product.Discount > 0 ? Model.Product.Cost - Model.Product.Cost * Model.Product.Discount / 100 : Model.Product.Cost).ToString("c"))
+                        </h5>
+                    }
+                    else
+                    {
+                        <div class="col-2 col-md-2 text-right">
+                            <!-- Изменено на col-3 для большей ширины -->
+                            <h5 class="text-warning">
+                                @Model.Product.Cost.ToString("c")
+                            </h5>
+                        </div>
+                    }
+                </div>
+                <div class="card-body">
+                    <div class="container rounded p-2">
+                        <div class="row">
+                            <div class="col-12 col-lg-4 p-1 text-center">
+                                @if (!string.IsNullOrWhiteSpace(Model.Product.PhotoPath))
+                                {
+                                    <img src="@WebConst.ImagePath@Model.Product.PhotoPath" class="rounded"
+                                         style="height: auto; object-fit: contain; max-height: 200px; width: 100%;"/>
+                                }
+                                else
+                                {
+                                    <img src="images/noImage.jpg"
+                                         style="height: auto; object-fit: contain; max-height: 200px; width: 100%;"/>
+                                }
+                            </div>
+                            <div class="col-12 col-lg-8">
+                                <div class="row pl-3">
+
+                                    <div class="col-12">
+                                        <span class="badge p-3 border text-dark" style="background-color: azure">@Model.Product.Category.Title</span>
+                                        <span class="badge p-3 border text-dark" style="background-color: lavender">@Model.Product.ApplicationType.Name</span>
+                                        <h3 class="text-success"></h3>
+
+                                        <p class="text-secondary">@Model.Product.Description</p>
+                                    </div>
+
+                                </div>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-dark">
+                    <div class="row">
+                        <div class="col-12 col-md-6 pb-1 ">
+                            <a asp-action="Index" class="btn btn-success btn-square form-control btn-lg" style="height:50px;">Back to List</a>
+                        </div>
+                        <div class="col-12 col-md-6 ">
+                            @if (Model.ExistsInCard)
+                            {
+                                <a asp-action="RemoveFromCart" asp-route-id="@Model.Product.Id" class="btn btn-warning btn-square form-control btn-lg" style="height:50px;">Remove from Cart</a>
+                            }
+                            else
+                            {
+                                <button type="submit" asp-route-id="@Model.Product.Id" asp-action="DetailsPost"
+                                        class="btn form-control btn-lg text-white" style="height:50px; background-color: steelblue">Add to Cart</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

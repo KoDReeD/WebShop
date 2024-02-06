@@ -14,7 +14,7 @@
             <div class="col-3">
                 <label class="float-right">
                     <span class="text-info h5" style="text-align: right">
-                        @(Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100 : Model.Cost)
+                        @(string.Format("{0:c0}",Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100 : Model.Cost))
                     </span>
                     / RUB
                 </label>
@@ -50,7 +50,8 @@
                 </p>
             </div>
             <div class="col-12 p-1">
-                <a class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
+                <a asp-action="Details" asp-route-id="@Model.Id"
+                    class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
             </div>
         </div>
     </div>
