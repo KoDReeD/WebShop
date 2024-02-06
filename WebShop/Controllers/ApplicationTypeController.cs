@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebShop.Context;
 using WebShop.Models;
+using WebShop.Utilites;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WebShop.Controllers;
@@ -22,7 +23,7 @@ public class ApplicationType : Controller
         var list = _db.ApplicationType.ToList();
         return View(list);
     }
-    
+
     public async Task<IActionResult> AddEdit(int id)
     {
         try
@@ -67,6 +68,8 @@ public class ApplicationType : Controller
         }
         catch (Exception e)
         {
+            TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
             return View("AddEdit", applicationType);
         }
     }
@@ -77,7 +80,7 @@ public class ApplicationType : Controller
         try
         {
             if (id == 0) return NotFound();
-            
+
             var application = await _db.ApplicationType.FirstOrDefaultAsync(x => x.Id == id);
             if (application == null) return NotFound();
 
@@ -102,6 +105,9 @@ public class ApplicationType : Controller
         }
         catch (Exception e)
         {
+            TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+            
             return View(application);
         }
     }

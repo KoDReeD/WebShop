@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using WebShop.Context;
 using WebShop.Models;
 using WebShop.Models.ViewModels;
+using WebShop.Utilites;
 
 namespace WebShop.Controllers;
 
@@ -36,17 +37,17 @@ public class ProductController : Controller
         {
             var categories = await GetCategoryList();
             var applications = await GetApplicationList();
-            
+
             if (categories == null) return View("Index");
             if (applications == null) return View("Index");
-            
+
             ProductVM objVM = new ProductVM()
             {
                 ApplicationTypeList = applications,
                 CategoryList = categories,
                 PhotoStatus = PhotoStatus.None,
             };
-            
+
             if (id == 0)
             {
                 objVM.Product = new Product();
@@ -83,7 +84,7 @@ public class ProductController : Controller
             return null;
         }
     }
-    
+
     private static async Task<List<SelectListItem>> GetApplicationList()
     {
         try
@@ -113,7 +114,7 @@ public class ProductController : Controller
             //  абсолютынй путь до wwwroot + папака с картинками
             var uploads = webRootPath + WebConst.ImagePath;
             var statusPhoto = productVm.PhotoStatus;
-
+            
             //  добавили файл
             if (statusPhoto == PhotoStatus.Add)
             {
@@ -126,10 +127,10 @@ public class ProductController : Controller
                         System.IO.File.Delete(photoPath);
                     }
                 }
-                
+
                 var extension = Path.GetExtension(files[0].FileName);
                 var file = files[0];
-                
+
                 var fileName = Guid.NewGuid() + extension;
                 var fullPath = Path.Combine(uploads, fileName);
 
@@ -141,7 +142,7 @@ public class ProductController : Controller
                 productVm.Product.PhotoPath = fileName;
             }
             //  удаление
-            else if(statusPhoto == PhotoStatus.Delete)
+            else if (statusPhoto == PhotoStatus.Delete)
             {
                 var oldPath = uploads + oldPhotoName;
 
@@ -149,47 +150,50 @@ public class ProductController : Controller
                 {
                     System.IO.File.Delete(oldPath);
                 }
-                    
+
                 productVm.Product.PhotoPath = null;
             }
+        }
+        catch (Exception e)
+        {
+            
+            if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
+            if (productVm.ApplicationTypeList == null) productVm.ApplicationTypeList = await GetApplicationList();
 
+            TempData["ErrorMessage"] = "Произошла ошибка при сохранении изображения";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+
+            return View(productVm);
+        }
+
+        try
+        {
+            throw new Exception();
             //  CREATE
             if (productVm.Product.Id == 0)
             {
-                try
-                {
-                    _db.Product.Add(productVm.Product);
-                    _db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch (Exception e)
-                {
-                    if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
-                    return View(productVm);
-                }
+                _db.Product.Add(productVm.Product);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
             }
             //  EDIT
             else
             {
-                try
-                {
-                    _db.Product.Update(productVm.Product);
-                    _db.SaveChanges();
-                    return RedirectToAction("Index");
-                }
-                catch (Exception e)
-                {
-                    if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
-                    return View(productVm);
-                }
+                _db.Product.Update(productVm.Product);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
             }
         }
         catch (Exception e)
         {
             if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
+            if (productVm.ApplicationTypeList == null) productVm.ApplicationTypeList = await GetApplicationList();
+
+            TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+
             return View(productVm);
         }
-
     }
 
 
@@ -204,7 +208,7 @@ public class ProductController : Controller
                 .Include(x => x.ApplicationType)
                 .Include(x => x.Category)
                 .FirstOrDefaultAsync(x => x.Id == id);
-            
+
             if (product == null) return NotFound();
 
             return View(product);
@@ -213,7 +217,6 @@ public class ProductController : Controller
         {
             return RedirectToAction("Index");
         }
-        
     }
 
     // // Post
@@ -235,7 +238,7 @@ public class ProductController : Controller
                     System.IO.File.Delete(uploads + photoPath);
                 }
             }
-            
+
             _db.Product.Remove(product);
             _db.SaveChanges();
 
@@ -243,6 +246,9 @@ public class ProductController : Controller
         }
         catch (Exception e)
         {
+            TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+
             return View(product);
         }
     }

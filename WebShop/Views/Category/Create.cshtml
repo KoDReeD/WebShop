@@ -58,3 +58,13 @@
 {
     @{<partial name="_ValidationScriptsPartial"/>}
 }
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        swal.fire({
+            title: "@TempData["ErrorMessage"]",
+            icon: "@TempData["ErrorType"]"
+        });
+    </script>
+}

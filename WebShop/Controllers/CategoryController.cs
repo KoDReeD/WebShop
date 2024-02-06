@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using WebShop.Models;
+using WebShop.Utilites;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WebShop.Context
@@ -45,6 +46,9 @@ namespace WebShop.Context
             }
             catch (Exception e)
             {
+                TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+                TempData["ErrorType"] = SweetAlertType.error.ToString();
+                
                 return View(category);
             }
         }
@@ -80,6 +84,9 @@ namespace WebShop.Context
             }
             catch (Exception e)
             {
+                TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+                TempData["ErrorType"] = SweetAlertType.error.ToString();
+                
                 return View(category);
             }
         }
@@ -99,9 +106,11 @@ namespace WebShop.Context
             }
             catch (Exception e)
             {
-                return RedirectToAction("Index");
+                return View("Index");
             }
         }
+        
+        
 
         [HttpPost]
         public async Task<IActionResult> Delete(Category category)
@@ -120,6 +129,9 @@ namespace WebShop.Context
             }
             catch (Exception e)
             {
+                TempData["ErrorMessage"] = "Произошла ошибка при сохранении";
+                TempData["ErrorType"] = SweetAlertType.error.ToString();
+
                 return View(category);
             }
         }

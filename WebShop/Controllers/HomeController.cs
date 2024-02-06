@@ -45,23 +45,24 @@ public class HomeController : Controller
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             var session = HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart);
-            if (session != null
-                && session.Count() > 0)
+            if (session != null && session.Count() > 0)
             {
                 shoppingCartList = session;
             }
-            
-            
+
+            var prod = await _db.Product
+                .Include(x => x.Category)
+                .Include(x => x.ApplicationType).FirstOrDefaultAsync(x => x.Id == id);
+
+            if (prod == null) return NotFound();
+
             var detailsVM = new DetailsProductVM()
             {
-                Product = await _db.Product
-                    .Include(x => x.Category)
-                    .Include(x => x.ApplicationType)
-                    .FirstOrDefaultAsync(x => x.Id == id),
-                ExistsInCard = shoppingCartList.FirstOrDefault(x => x.ProductId == id) == null 
-                ? false : true
+                Product = prod,
+                ExistsInCard = shoppingCartList.FirstOrDefault(x => x.ProductId == id) == null
+                    ? false : true
             };
-            
+
 
             return View(detailsVM);
         }
@@ -70,7 +71,8 @@ public class HomeController : Controller
             return View("Index");
         }
     }
-    
+
+    //  Добавление в карзину
     [HttpPost]
     public IActionResult DetailsPost(int id)
     {
@@ -78,12 +80,12 @@ public class HomeController : Controller
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             var session = HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart);
-            if (session != null
-                && session.Count() > 0)
+            if (session != null && session.Count() > 0)
             {
                 shoppingCartList = session;
             }
-            
+
+            //  храним серелизованный list в сессии
             shoppingCartList.Add(new ShoppingCart() { ProductId = id });
             HttpContext.Session.Set(WebConst.SessionCart, shoppingCartList);
 
@@ -91,7 +93,9 @@ public class HomeController : Controller
         }
         catch (Exception e)
         {
-            return NotFound();
+            TempData["ErrorMessage"] = "Произошла ошибка при добавлении в корзину";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+            return RedirectToAction("Details", new { id = id });
         }
     }
 
@@ -112,8 +116,7 @@ public class HomeController : Controller
         {
             List<ShoppingCart> shoppingCartList = new List<ShoppingCart>();
             var session = HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart);
-            if (session != null
-                && session.Count() > 0)
+            if (session != null && session.Count() > 0)
             {
                 shoppingCartList = session;
             }
@@ -123,13 +126,16 @@ public class HomeController : Controller
             {
                 shoppingCartList.Remove(itemToRemove);
             }
+
             HttpContext.Session.Set(WebConst.SessionCart, shoppingCartList);
 
             return RedirectToAction(nameof(Index));
         }
         catch (Exception e)
         {
-            return NotFound();
+            TempData["ErrorMessage"] = "Произошла ошибка при добавлении в корзину";
+            TempData["ErrorType"] = SweetAlertType.error.ToString();
+            return RedirectToAction("Details", new { id = id });
         }
     }
 }
