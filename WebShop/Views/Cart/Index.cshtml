@@ -18,71 +18,124 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class=" d-none d-lg-block">
-                            <div class="row" style="color:#821f3d">
-                                <div class="col-1 col-lg-1">
-                                </div>
-                                <div class="col-3 col-lg-3">
-                                    Product Details
-                                </div>
-                                <div class="col-2 col-lg-2">
-                                    Price per sqft
-                                </div>
-                                <div class="col-2 col-lg-2">
-                                    Amount
-                                </div>
-                                <div class="col-2 col-lg-2">
-                                    Sum
-                                </div>
-                                <div class="col-2 col-sm-2 col-lg-1">
+
+                    @if (Model.Count > 0)
+                    {
+                        <div class="card-body">
+                            <div class=" d-none d-lg-block">
+                                <div class="row" style="color:#821f3d">
+                                    <div class="col-1 col-lg-1">
+                                    </div>
+                                    <div class="col-3 col-lg-3">
+                                        Product Details
+                                    </div>
+                                    <div class="col-2 col-lg-2">
+                                        Price per sqft
+                                    </div>
+                                    <div class="col-2 col-lg-2">
+                                        Amount
+                                    </div>
+                                    <div class="col-2 col-lg-2">
+                                        Sum
+                                    </div>
+                                    <div class="col-2 col-sm-2 col-lg-1">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <hr/>
-
-                        @foreach (var obj in Model)
-                        {
-                            var discPrice = obj.Product.Discount > 0 ? (obj.Product.Cost - obj.Product.Cost * obj.Product.Discount / 100) : obj.Product.Cost;
-                            <div class="row h-100">
-                                <div class="col-1 col-lg-1 text-center py-2">
-                                    <img src="@WebConst.ImagePath@obj.Product.PhotoPath" class="rounded" width="100%"/>
-                                </div>
-                                <div class="col-3 col-lg-3">
-                                    <h5>@obj.Product.Name</h5>
-                                    <div style="font-size:11px;">@obj.Product.Description</div>
-                                </div>
-                                <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                    <span style="font-size:17px;">@discPrice</span>/ sqft
-                                </div>
-                                <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                    <span style="font-size:17px;">@obj.Amount</span>/ sqft
-                                </div>
-                                <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
-                                    <span style="font-size:17px;">@(discPrice * obj.Amount)</span>/ sqft
-                                </div>
-                                <div class="col-2 col-lg-2 text-center pt-lg-3">
-                                    <a class="btn btn-outline-danger">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
-                                </div>
-                            </div>
                             <hr/>
-                        }
 
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-6 col-md-3 offset-md-9">
-                                <button type="submit" class="btn btn-success form-control ">
-                                    <span>Continue</span>
-                                </button>
-                            </div>
+                            @foreach (var obj in Model)
+                            {
+                                var discPrice = obj.Product.Discount > 0 ? (obj.Product.Cost - obj.Product.Cost * obj.Product.Discount / 100) : obj.Product.Cost;
+                                <div class="row h-100">
+                                    <div class="col-1 col-lg-1 text-center py-2">
+                                        <img src="@WebConst.ImagePath@obj.Product.PhotoPath" class="rounded" width="100%"/>
+                                    </div>
+                                    <div class="col-3 col-lg-3">
+                                        <h5>@obj.Product.Name</h5>
+                                        <div style="font-size:11px;">@obj.Product.Description</div>
+                                    </div>
+                                    <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
+                                        <span style="font-size:17px;">@discPrice</span>/ sqft
+                                    </div>
+                                    <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
+                                        <span style="font-size:17px;">@obj.Amount</span>/ sqft
+                                    </div>
+                                    <div class="col-2 col-lg-2 pt-lg-4" style="font-size:11px;">
+                                        <span style="font-size:17px;">@(discPrice * obj.Amount)</span>/ sqft
+                                    </div>
+                                    <div class="col-2 col-lg-2 text-center pt-lg-3">
+                                        @if (obj.Amount > 0)
+                                        {
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <a class="btn btn-outline-danger" asp-action="DeleteProduct" asp-route-id="@obj.Product.Id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-secondary" asp-action="MinusToCart" asp-route-id="@obj.Product.Id">-</button>
+                                                </div>
+                                                <input readonly type="text" class="form-control" asp-for="@Model.First(x => x.Product.Id == obj.Product.Id).Amount" aria-label="Quantity">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" asp-action="PlusToCart" asp-route-id="@obj.Product.Id">+</button>
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                        }
+                                    </div>
+                                </div>
+                                <hr/>
+                            }
+
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <h4 class="text-center m-3">CART IS EMPTY</h4>
+                    }
+
+                    @if (Model.Count > 0)
+                    {
+                        <div class="card-footer">
+                            <div class="row">
+                                <div class="col-6 col-md-3 offset-md-9">
+                                    <button type="submit" class="btn btn-success form-control ">
+                                        <span>Continue</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div> 
+                    }
+
                 </div>
             </div>
         </div>
     </div>
 </form>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        swal.fire({
+            title: "@TempData["ErrorMessage"]",
+            icon: "@TempData["ErrorType"]"
+        });
+    </script>
+}
+
+@* <div class="row col-2 col-lg2"> *@
+@*     <a class="btn btn-outline-danger"> *@
+@*         <i class="fas fa-trash"></i> *@
+@*     </a> *@
+@*     <button type="submit" asp-route-id="@obj.Product.Id" asp-controller="Home" asp-action="MinusToCart" *@
+@*             class="btn btn-secondary btn-square form-control" style="height:50px;"> *@
+@*         - *@
+@*     </button> *@
+@*     <input type="text" readonly="readonly" asp-for="Count" class="form-control text-center"> *@
+@*     <button type="submit"  asp-route-id="@obj.Product.Id" asp-controller="Home" asp-action="PlusToCart" *@
+@*             class="btn btn-secondary btn-square form-control" style="height:50px;"> *@
+@*         + *@
+@*     </button> *@
+@* </div> *@

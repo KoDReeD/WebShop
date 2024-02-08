@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebShop.Context;
+using WebShop.Utilites;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services.AddSession(op =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<SessionServices>();
 
 var app = builder.Build();
 

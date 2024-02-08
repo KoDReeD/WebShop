@@ -35,6 +35,7 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
                     </li>
                     
+                    @* считаем все amount товара *@
                     @* проверка включена ли сессия и есть ли продукты в сесии *@
                     <li>
                         @* если в сесси ShoppingCart не пустое *@
@@ -42,9 +43,12 @@
                         {
                             <a asp-action="Index" asp-controller="Cart" class="nav-link">
                                 @{
-                                    var count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart).Count;
+                                    int sum = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart)
+                                        .Sum(x => x.Amount);
+
+                                    // var count = HttpContextAccessor.HttpContext.Session.Get<List<ShoppingCart>>(WebConst.SessionCart).Count;
                                 }
-                                <i class="fas fa-shopping-cart"></i> &nbsp; (@count)
+                                <i class="fas fa-shopping-cart"></i> &nbsp; (@sum)
                             </a>
                             
                         }
