@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebShop.Context;
@@ -7,6 +8,7 @@ using WebShop.Utilites;
 
 namespace WebShop.Controllers;
 
+[Authorize]
 public class CartController : Controller
 {
     private ApplicationDbContext _db;

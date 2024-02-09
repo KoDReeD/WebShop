@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebShop.Context;
@@ -8,6 +9,7 @@ using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WebShop.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ApplicationType : Controller
 {
     private ApplicationDbContext _db;

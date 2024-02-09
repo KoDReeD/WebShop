@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using WebShop.Utilites;
 
 namespace WebShop.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ProductController : Controller
 {
     private static ApplicationDbContext _db;
