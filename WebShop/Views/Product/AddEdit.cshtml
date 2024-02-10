@@ -47,7 +47,7 @@
                         <label asp-for="Product.Name"></label>
                     </div>
                     <div class="col-8">
-                        <textarea rows="1" asp-for="Product.Name" class="form-control" 
+                        <textarea rows="1" asp-for="Product.Name" class="form-control area-resize" 
                             style="max-height: 90px; min-height: 30px" maxlength="100"></textarea>
                         <span asp-validation-for="Product.Name" class="text-danger"></span>
                     </div>
@@ -119,7 +119,7 @@
                         <label asp-for="Product.Description"></label>
                     </div>
                     <div class="col-8">
-                        <textarea rows="1" asp-for="Product.Description" class="form-control" 
+                        <textarea rows="1" asp-for="Product.Description" class="form-control area-resize" 
                             style="max-height: 200px; min-height: 70px" maxlength="250">
                         </textarea>
                         <span asp-validation-for="Product.Description" class="text-danger"></span>

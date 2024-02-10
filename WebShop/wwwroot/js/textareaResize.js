@@ -1,6 +1,6 @@
 
 document.addEventListener("DOMContentLoaded", function () {
-    var textareas = document.querySelectorAll("textarea");
+    var textareas = document.querySelectorAll("textarea.area-resize");
 
     textareas.forEach(function (textarea) {
         textarea.style.height = "auto";

@@ -16,7 +16,7 @@
                         <label asp-for="Id"></label>
                     </div>
                     <div class="col-8">
-                        <input readonly asp-for="Id" class="form-control"/>
+                        <input readonly asp-for="Id" class="form-control area"/>
                     </div>
                 </div>
                 <br/>
@@ -27,7 +27,7 @@
                         <label asp-for="Name"></label>
                     </div>
                     <div class="col-8">
-                        <textarea rows="1" readonly asp-for="Name" class="form-control"></textarea>
+                        <textarea rows="1" readonly asp-for="Name" class="form-control area-resize"></textarea>
                     </div>
                 </div>
 
@@ -51,8 +51,8 @@
                         <label asp-for="Description"></label>
                     </div>
                     <div class="col-8">
-                        <textarea oninput="autoResize(this)" readonly asp-for="Description" 
-                            class="form-control" style="resize: none"></textarea>
+                        <textarea rows="1" oninput="autoResize(this)" readonly asp-for="Description" 
+                            class="form-control area-resize" style="resize: none"></textarea>
                     </div>
                 </div>
 
