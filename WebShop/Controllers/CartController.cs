@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,27 +31,44 @@ public class CartController : Controller
             if (session != null && session.Count > 0)
             {
                 cartList = session;
-            } 
-            //  из продукт беру только те id которые содержаться в карзине
-            var productIds = cartList.Select(i => i.ProductId).ToList();
-
-            var products = await _db.Product
-                .Where(x => productIds.Contains(x.Id))
-                .ToListAsync();
-
-            List<CartItem> items = new List<CartItem>();
-            foreach (var prod in products)
-            {
-                var cart = cartList.FirstOrDefault(x => x.ProductId == prod.Id);
-                items.Add(new CartItem(){Product = prod, Amount = cart.Amount});
             }
 
-            return View(items);
+            var products = await _db.Product.ToListAsync();
+            List<CartItem> items = new List<CartItem>();
+            var cartItems = cartList.Join(products,
+                cart => cart.ProductId,
+                p => p.Id,
+                (cart, p) => new CartItem
+                {
+                    Product = p,
+                    Amount = cart.Amount
+                }).ToList();
+
+            return View(cartItems);
         }
         catch (Exception e)
         {
             return RedirectToAction("Index", "Product");
         }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [ActionName("Index")]
+    public IActionResult IndexPost()
+    {
+        return RedirectToAction("Summary");
+    }
+    
+    public IActionResult Summary()
+    {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+        var userID = User.FindFirstValue(ClaimTypes.Name);
+        var session = _sessionManager.GetSession(WebConst.SessionCart);
+        // Заглушка
+        return RedirectToAction("Index");
     }
 
 
@@ -108,4 +126,6 @@ public class CartController : Controller
             return RedirectToAction("Index", new { id = id });
         }
     }
+
+    
 }

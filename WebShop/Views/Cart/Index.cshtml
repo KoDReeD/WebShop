@@ -49,9 +49,25 @@
                             {
                                 var discPrice = obj.Product.Discount > 0 ? (obj.Product.Cost - obj.Product.Cost * obj.Product.Discount / 100) : obj.Product.Cost;
                                 <div class="row h-100">
-                                    <div class="col-1 col-lg-1 text-center py-2">
-                                        <img src="@WebConst.ImagePath@obj.Product.PhotoPath" class="rounded" width="100%"/>
+                                    @* <div class="col-1 col-lg-1 text-center py-2"> *@
+                                    @*     <img src="@WebConst.ImagePath@obj.Product.PhotoPath" class="rounded" width="100%"/> *@
+                                    @* </div> *@
+
+                                    <div class="col-1 col-lg-1 py-2 d-flex align-items-center justify-content-center">
+                                    @if (!string.IsNullOrWhiteSpace(obj.Product.PhotoPath))
+                                    {
+                                        <img class="card-img-top img-fluid d-block mx-auto mb-3 mt-1"
+                                             style="height: auto; max-height: 50px; object-fit: contain; width: 100%;"
+                                             src="@WebConst.ImagePath@obj.Product.PhotoPath" alt="Card image cap">
+                                    }
+                                    else
+                                    {
+                                        <img class="card-img-top img-fluid d-block mx-auto mb-3 "
+                                             style="height: auto; max-height: 50px; object-fit: contain; width: 100%;"
+                                             src="images/noImage.jpg" alt="Card image cap">
+                                    }
                                     </div>
+
                                     <div class="col-3 col-lg-3">
                                         <h5>@obj.Product.Name</h5>
                                         <div style="font-size:11px;">@obj.Product.Description</div>
@@ -106,7 +122,7 @@
                                     </button>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                     }
 
                 </div>

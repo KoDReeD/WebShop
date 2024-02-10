@@ -18,9 +18,9 @@ namespace WebShop.Context
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _db.Category.ToList();
+            var list = await _db.Category.ToListAsync();
             return View(list);
         }
 
@@ -33,10 +33,20 @@ namespace WebShop.Context
         [HttpPost]
         // токен защиты, проверка что действителен в методе
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Category category)
+        public async Task<IActionResult> Create(Category category)
         {
             try
             {
+                var name = category.Title?.ToLower() ?? "";
+                var checkName = await _db.Category.FirstOrDefaultAsync(x => x.Title.ToLower() == name);
+            
+                if (checkName != null)
+                {
+                    TempData["ErrorMessage"] = "Category with that name already exists";
+                    TempData["ErrorType"] = SweetAlertType.error.ToString();
+                    return View(category);
+                }
+                
                 if (ModelState.IsValid)
                 {
                     _db.Category.Add(category);
@@ -60,7 +70,7 @@ namespace WebShop.Context
         {
             try
             {
-                var category = await _db.Category.FirstOrDefaultAsync(x => x.Id == id);
+                var category = await _db.Category.FindAsync(id);
                 if (category == null) return NotFound();
 
                 return View(category);
@@ -76,10 +86,20 @@ namespace WebShop.Context
         [HttpPost]
         // токен защиты, проверка что действителен в методе
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Category category)
+        public async Task<IActionResult> Edit(Category category)
         {
             try
             {
+                var name = category.Title?.ToLower() ?? "";
+                var checkName = await _db.Category.AsNoTracking().FirstOrDefaultAsync(x => x.Title.ToLower() == name);
+            
+                if (checkName != null && checkName.Id != category.Id)
+                {
+                    TempData["ErrorMessage"] = "Category with that name already exists";
+                    TempData["ErrorType"] = SweetAlertType.error.ToString();
+                    return View(category);
+                }
+                
                 _db.Category.Update(category);
                 _db.SaveChanges();
                 return RedirectToAction("Index");
@@ -101,7 +121,7 @@ namespace WebShop.Context
             {
                 if (id == 0) return NotFound();
                 
-                var category = await _db.Category.FirstOrDefaultAsync(x => x.Id == id);
+                var category = await _db.Category.FindAsync(id);
                 if (category == null) return NotFound();
 
                 return View(category);

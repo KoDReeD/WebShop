@@ -27,7 +27,7 @@
                         <label asp-for="Name"></label>
                     </div>
                     <div class="col-8">
-                        <input readonly asp-for="Name" class="form-control"/>
+                        <textarea rows="1" readonly asp-for="Name" class="form-control"></textarea>
                     </div>
                 </div>
 
@@ -51,7 +51,8 @@
                         <label asp-for="Description"></label>
                     </div>
                     <div class="col-8">
-                        <input readonly asp-for="Description" class="form-control"/>
+                        <textarea oninput="autoResize(this)" readonly asp-for="Description" 
+                            class="form-control" style="resize: none"></textarea>
                     </div>
                 </div>
 
@@ -134,6 +135,7 @@
         </div>
     </div>
 </form>
+
 
 @if (TempData["ErrorMessage"] != null)
 {

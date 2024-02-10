@@ -13,7 +13,7 @@
             </a>
         </div>
     </div>
-    
+
     <br/>
 
     @if (Model.Count > 0)
@@ -27,28 +27,31 @@
                 <th></th>
             </tr>
             </thead>
+
+            <tbody>
             @foreach (var product in Model)
             {
                 <tr>
-                    <td width="50%">@product.Name</td>
-                    <td width="30%">@(product.Discount > 0 ? (product.Cost - product.Cost * product.Discount / 100) : product.Cost)</td>
+                    <td width="50%" style="word-break: break-all">@product.Name</td>
+                    <td width="20%">@(product.Discount > 0 ? (product.Cost - product.Cost * product.Discount / 100) : product.Cost)</td>
                     <td width="20%">@product.Discount%</td>
-                    <td>
-                        <div class="w-75 btn-group" role="group">
-                            <a asp-action="AddEdit" class="btn btn-primary mx-2" asp-route-id="@product.Id">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
+                    <td width="10%">
+                        <div class="row">
+                            <div class="w-75 btn-group" role="group">
+                                <a asp-action="AddEdit" class="btn btn-primary mx-2" asp-route-id="@product.Id">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
 
-                            <a asp-action="Delete" class="btn btn-danger mx-2"
-                               asp-route-id="@product.Id">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
+                                <a asp-action="Delete" class="btn btn-danger mx-2"
+                                   asp-route-id="@product.Id">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            </div>
                         </div>
+
                     </td>
                 </tr>
             }
-            <tbody>
-
             </tbody>
         </table>
     }
@@ -57,4 +60,3 @@
         <p>Products Not Exsists</p>
     }
 </div>
-

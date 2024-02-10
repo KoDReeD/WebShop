@@ -50,7 +50,8 @@ public class HomeController : Controller
 
             var prod = await _db.Product
                 .Include(x => x.Category)
-                .Include(x => x.ApplicationType).FirstOrDefaultAsync(x => x.Id == id);
+                .Include(x => x.ApplicationType)
+                .FirstOrDefaultAsync(x => x.Id == id);
 
             if (prod == null) return NotFound();
 

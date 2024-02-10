@@ -20,9 +20,9 @@ public class ApplicationType : Controller
     }
 
     // GET
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        var list = _db.ApplicationType.ToList();
+        var list = await _db.ApplicationType.ToListAsync();
         return View(list);
     }
 
@@ -36,7 +36,7 @@ public class ApplicationType : Controller
             }
             else
             {
-                var application = await _db.ApplicationType.FirstOrDefaultAsync(x => x.Id == id);
+                var application = await _db.ApplicationType.FindAsync(id);
                 if (application == null) return NotFound();
 
                 return View(application);
@@ -49,10 +49,20 @@ public class ApplicationType : Controller
     }
 
     [HttpPost]
-    public IActionResult AddEdit(Models.ApplicationType applicationType)
+    public async Task<IActionResult> AddEdit(Models.ApplicationType applicationType)
     {
         try
         {
+            var name = applicationType.Name?.ToLower() ?? "";
+            var checkName = await _db.ApplicationType.AsNoTracking().FirstOrDefaultAsync(x => x.Name.ToLower() == name);
+            
+            if (checkName != null && checkName.Id != applicationType.Id)
+            {
+                TempData["ErrorMessage"] = "Application Type with that name already exists";
+                TempData["ErrorType"] = SweetAlertType.error.ToString();
+                return View("AddEdit", applicationType);
+            }
+
             //  добавление
             if (applicationType.Id == 0)
             {
@@ -83,7 +93,7 @@ public class ApplicationType : Controller
         {
             if (id == 0) return NotFound();
 
-            var application = await _db.ApplicationType.FirstOrDefaultAsync(x => x.Id == id);
+            var application = await _db.ApplicationType.FindAsync(id);
             if (application == null) return NotFound();
 
             return View(application);
@@ -101,6 +111,7 @@ public class ApplicationType : Controller
         {
             var checkList = await _db.Product.Where(x => x.ApplicationTypeId == application.Id).ToListAsync();
             if (checkList.Count > 0) return RedirectToAction("Index");
+            
             _db.ApplicationType.Remove(application);
             await _db.SaveChangesAsync();
             return RedirectToAction("Index");

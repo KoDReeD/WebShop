@@ -85,9 +85,10 @@ public class SessionServices
             //  есть в корзине
             else
             {
-                shoppingCartList.Remove(currentProduct);
-                currentProduct.Amount = ++currentProduct.Amount;
-                shoppingCartList.Add(currentProduct);
+                currentProduct.Amount++;
+                // shoppingCartList.Remove(currentProduct);
+                // currentProduct.Amount = ++currentProduct.Amount;
+                // shoppingCartList.Add(currentProduct);
             }
 
             //  храним серелизованный list в сессии
@@ -109,17 +110,24 @@ public class SessionServices
 
             var currentProduct = shoppingCartList.FirstOrDefault(x => x.ProductId == id);
             var Productamount = currentProduct.Amount;
-            //  уменьшаем количество
-            if (currentProduct != null && Productamount >= 1)
+            
+            //  товар по id есть в корзине и его количество > 0, значит можно удалит
+            if (currentProduct != null && Productamount > 0)
             {
-                // если элементов стало 0, полное удаление
-                shoppingCartList.Remove(currentProduct);
                 --Productamount;
+                
+                // // если элементов стало 0, полное удаление
+                // shoppingCartList.Remove(currentProduct);
+                // --Productamount;
 
                 if (Productamount > 0)
                 {
                     currentProduct.Amount = Productamount;
-                    shoppingCartList.Add(currentProduct);
+                    // shoppingCartList.Add(currentProduct);
+                }
+                else
+                {
+                    shoppingCartList.Remove(currentProduct);
                 }
             }
 

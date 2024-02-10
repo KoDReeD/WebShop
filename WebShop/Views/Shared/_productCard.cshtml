@@ -4,20 +4,28 @@
     <!-- Card-->
     <div class="card bg-white rounded shadow-sm" style="border:1px solid #222; height: 420px">
         <div class="card-body px-3 pt-3 pb-1 row" style="height: 20px">
-            <div class="col-9">
+            <div class="col-8">
                 <label class="float-left text-truncate d-inline-block overflow-ellipsis"
                        style="max-width: 100%; white-space: normal; overflow: hidden; 
                                text-overflow: ellipsis">
-                    @(Model.Name.Length > 80 ? Model.Name.Substring(0, 81) + "..." : Model.Name)
+                    @(Model.Name.Length > 72 ? Model.Name.Substring(0, 73) + "..." : Model.Name)
                 </label>
             </div>
-            <div class="col-3">
-                <label class="float-right">
-                    <span class="text-info h5" style="text-align: right">
-                        @(string.Format("{0:c0}",Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100 : Model.Cost))
-                    </span>
-                    / RUB
-                </label>
+            <div class="col-4 float-right">
+                @if (Model.Discount > 0)
+                {
+                    <h6 class="text-primary float-right" style="text-align: right">
+                        <strike class="">@Model.Cost.ToString("c")</strike>
+                        @((Model.Discount > 0 ? Model.Cost - Model.Cost * Model.Discount / 100 : Model.Cost).ToString("c"))
+                    </h6>
+                }
+                else
+                {
+                    <!-- Изменено на col-3 для большей ширины -->
+                    <h6 class="text-primary float-right" style="text-align: right">
+                        @Model.Cost.ToString("c")
+                    </h6>
+                }
             </div>
 
         </div>
@@ -44,14 +52,16 @@
                 <span class="badge p-2 border w-100 text-dark" style="background-color:aliceblue; 
                     display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@Model.ApplicationType.Name</span>
             </div>
-            <div class="col-12 pt-2" style="font-size:13px; text-align:justify; height: 25px" >
+            <div class="col-12 pt-2" style="font-size:13px; text-align:justify; height: 25px">
                 <p>
-                    @(!string.IsNullOrWhiteSpace(Model.Description) ? (Model.Description.Length > 143 ? Model.Description.Substring(0, 144) + "..." : Model.Description) : " ")
+                    @(!string.IsNullOrWhiteSpace(Model.Description) ? (Model.Description.Length > 136 ? Model.Description.Substring(0, 137) + "..." : Model.Description) : " ")
                 </p>
             </div>
             <div class="col-12 p-1">
                 <a asp-action="Details" asp-route-id="@Model.Id"
-                    class="btn btn-dark form-control btn-sm p-2" style="height:40px">View Details</a>
+                   class="btn btn-dark form-control btn-sm p-2" style="height:40px">
+                    View Details
+                </a>
             </div>
         </div>
     </div>

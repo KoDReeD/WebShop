@@ -56,7 +56,7 @@ public class ProductController : Controller
             }
             else
             {
-                var product = await _db.Product.FirstOrDefaultAsync(x => x.Id == id);
+                var product = await _db.Product.FindAsync(id);
                 if (product == null) return NotFound();
 
                 objVM.Product = product;
@@ -69,41 +69,7 @@ public class ProductController : Controller
             return RedirectToAction("Index");
         }
     }
-
-    private static async Task<List<SelectListItem>> GetCategoryList()
-    {
-        try
-        {
-            var list = await _db.Category.Select(x => new SelectListItem()
-            {
-                Text = x.Title,
-                Value = x.Id.ToString()
-            }).ToListAsync();
-            return list;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
-    private static async Task<List<SelectListItem>> GetApplicationList()
-    {
-        try
-        {
-            var list = await _db.ApplicationType.Select(x => new SelectListItem()
-            {
-                Text = x.Name,
-                Value = x.Id.ToString()
-            }).ToListAsync();
-            return list;
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
-    }
-
+    
     // Post
     [HttpPost]
     public async Task<IActionResult> AddEdit(ProductVM productVm)
@@ -111,6 +77,19 @@ public class ProductController : Controller
         var files = HttpContext.Request.Form.Files;
         try
         {
+            var name = productVm.Product.Name?.ToLower() ?? "";
+            var checkName = await _db.Product.AsNoTracking().FirstOrDefaultAsync(x => x.Name.ToLower() == name);
+            
+            if (checkName != null && checkName.Id != productVm.Product.Id)
+            {
+                if (productVm.CategoryList == null) productVm.CategoryList = await GetCategoryList();
+                if (productVm.ApplicationTypeList == null) productVm.ApplicationTypeList = await GetApplicationList();
+
+                TempData["ErrorMessage"] = "Product with that name already exists";
+                TempData["ErrorType"] = SweetAlertType.error.ToString();
+                return View(productVm);
+            }
+            
             var oldPhotoName = productVm.Product.PhotoPath;
             string webRootPath = _webHostEnvironment.WebRootPath;
             //  абсолютынй путь до wwwroot + папака с картинками
@@ -170,21 +149,19 @@ public class ProductController : Controller
 
         try
         {
-            throw new Exception();
             //  CREATE
             if (productVm.Product.Id == 0)
             {
                 _db.Product.Add(productVm.Product);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
+                
             }
             //  EDIT
             else
             {
                 _db.Product.Update(productVm.Product);
-                _db.SaveChanges();
-                return RedirectToAction("Index");
             }
+            _db.SaveChanges();
+            return RedirectToAction("Index");
         }
         catch (Exception e)
         {
@@ -252,6 +229,41 @@ public class ProductController : Controller
             TempData["ErrorType"] = SweetAlertType.error.ToString();
 
             return View(product);
+        }
+    }
+    
+    //  ВСПОМОГАТЕЛЬНЫЕ ПРИВАТНЫЕ
+    private static async Task<List<SelectListItem>> GetCategoryList()
+    {
+        try
+        {
+            var list = await _db.Category.Select(x => new SelectListItem()
+            {
+                Text = x.Title,
+                Value = x.Id.ToString()
+            }).ToListAsync();
+            return list;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    private static async Task<List<SelectListItem>> GetApplicationList()
+    {
+        try
+        {
+            var list = await _db.ApplicationType.Select(x => new SelectListItem()
+            {
+                Text = x.Name,
+                Value = x.Id.ToString()
+            }).ToListAsync();
+            return list;
+        }
+        catch (Exception e)
+        {
+            return null;
         }
     }
 }
